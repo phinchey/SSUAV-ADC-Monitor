@@ -352,10 +352,6 @@ private:
 	float _baroAltOrigin;
 	float _gpsAltOrigin;
 
-	// flow integration
-	float _flowX;
-	float _flowY;
-
 	// status
 	bool _validXY;
 	bool _validZ;

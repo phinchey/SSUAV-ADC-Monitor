@@ -6,8 +6,8 @@ extern orb_advert_t mavlink_log_pub;
 
 // required number of samples for sensor
 // to initialize
-static const uint32_t 		REQ_VISION_INIT_COUNT = 20;
-static const uint32_t 		VISION_TIMEOUT =    500000;	// 0.5 s
+static const uint32_t 		REQ_VISION_INIT_COUNT = 5;
+static const uint32_t 		VISION_TIMEOUT =    10000000;	// 10 s
 
 void BlockLocalPositionEstimator::visionInit()
 {

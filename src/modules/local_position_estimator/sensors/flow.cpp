@@ -29,10 +29,6 @@ void BlockLocalPositionEstimator::flowInit()
 					     "quality %d std %d",
 					     int(_flowQStats.getMean()(0)),
 					     int(_flowQStats.getStdDev()(0)));
-		// set flow x, y as estimate x, y at beginning of optical
-		// flow tracking
-		_flowX = _x(X_x);
-		_flowY = _x(X_y);
 		_flowInitialized = true;
 		_flowFault = FAULT_NONE;
 	}
@@ -65,24 +61,6 @@ int BlockLocalPositionEstimator::flowMeasure(Vector<float, n_y_flow> &y)
 
 	float d = agl() * cosf(_sub_att.get().roll) * cosf(_sub_att.get().pitch);
 
-	// check for global accuracy
-	if (_gpsInitialized) {
-		double  lat = _sub_gps.get().lat * 1.0e-7;
-		double  lon = _sub_gps.get().lon * 1.0e-7;
-		float px = 0;
-		float py = 0;
-		map_projection_project(&_map_ref, lat, lon, &px, &py);
-		Vector2f delta(px - _flowX, py - _flowY);
-
-		if (delta.norm() > 3) {
-			mavlink_and_console_log_info(&mavlink_log_pub,
-						     "[lpe] flow too far from GPS, resetting position");
-			_flowX = px;
-			_flowY = py;
-			return -1;
-		}
-	}
-
 	// optical flow in x, y axis
 	float flow_x_rad = _sub_flow.get().pixel_flow_x_integral;
 	float flow_y_rad = _sub_flow.get().pixel_flow_y_integral;
@@ -110,7 +88,7 @@ int BlockLocalPositionEstimator::flowMeasure(Vector<float, n_y_flow> &y)
 	// imporant to timestamp flow even if distance is bad
 	_time_last_flow = _timeStamp;
 	float dt = (_timeStamp - _time_last_flow)/1.0e6;
-	if (dt > 0.5) {
+	if (dt > 0.5f) {
 		return -1;
 	}
 
@@ -176,11 +154,6 @@ void BlockLocalPositionEstimator::flowCorrect()
 		_x += dx;
 		_P -= K * C * _P;
 
-	} else {
-		// reset flow integral to current estimate of position
-		// if a fault occurred
-		_flowX = _x(X_x);
-		_flowY = _x(X_y);
 	}
 
 }
