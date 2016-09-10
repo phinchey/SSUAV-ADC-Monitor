@@ -374,6 +374,7 @@ void BlockLocalPositionEstimator::update()
 		// don't want it to take too long
 		if (!PX4_ISFINITE(_x(i))) {
 			reinit_x = true;
+			mavlink_and_console_log_info(&mavlink_log_pub, "[lpe] reinit x, x(%d) not finite", i);
 			break;
 		}
 	}

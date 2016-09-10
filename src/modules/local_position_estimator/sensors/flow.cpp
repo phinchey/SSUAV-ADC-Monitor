@@ -64,6 +64,10 @@ int BlockLocalPositionEstimator::flowMeasure(Vector<float, n_y_flow> &y)
 	// optical flow in x, y axis
 	float flow_x_rad = _sub_flow.get().pixel_flow_x_integral;
 	float flow_y_rad = _sub_flow.get().pixel_flow_y_integral;
+	float dt_flow = _sub_flow.get().integration_timespan/1.0e6f;
+	if (dt_flow > 0.5f || dt_flow < 1.0e-6f) {
+		return -1;
+	}
 
 	// angular rotation in x, y axis
 	float gyro_x_rad = _flow_gyro_x_high_pass.update(
@@ -87,14 +91,10 @@ int BlockLocalPositionEstimator::flowMeasure(Vector<float, n_y_flow> &y)
 
 	// imporant to timestamp flow even if distance is bad
 	_time_last_flow = _timeStamp;
-	float dt = (_timeStamp - _time_last_flow)/1.0e6;
-	if (dt > 0.5f) {
-		return -1;
-	}
 
 	// measurement
-	y(Y_flow_vx) = delta_n(0);
-	y(Y_flow_vy) = delta_n(1);
+	y(Y_flow_vx) = delta_n(0)/dt_flow;
+	y(Y_flow_vy) = delta_n(1)/dt_flow;
 
 	_flowQStats.update(Scalarf(_sub_flow.get().quality));
 
