@@ -148,10 +148,6 @@ BlockLocalPositionEstimator::BlockLocalPositionEstimator() :
 	_baroAltOrigin(0),
 	_gpsAltOrigin(0),
 
-	// flow integration
-	_flowX(0),
-	_flowY(0),
-
 	// status
 	_validXY(false),
 	_validZ(false),

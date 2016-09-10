@@ -107,18 +107,18 @@ int BlockLocalPositionEstimator::flowMeasure(Vector<float, n_y_flow> &y)
 	Matrix3f R_nb(_sub_att.get().R);
 	Vector3f delta_n = R_nb * delta_b;
 
-	// flow integration
-	_flowX += delta_n(0);
-	_flowY += delta_n(1);
-
-	// measurement
-	y(Y_flow_x) = _flowX;
-	y(Y_flow_y) = _flowY;
-
-	_flowQStats.update(Scalarf(_sub_flow.get().quality));
-
 	// imporant to timestamp flow even if distance is bad
 	_time_last_flow = _timeStamp;
+	float dt = (_timeStamp - _time_last_flow)/1.0e6;
+	if (dt > 0.5) {
+		return -1;
+	}
+
+	// measurement
+	y(Y_flow_vx) = delta_n(0);
+	y(Y_flow_vy) = delta_n(1);
+
+	_flowQStats.update(Scalarf(_sub_flow.get().quality));
 
 	return OK;
 }
@@ -133,15 +133,15 @@ void BlockLocalPositionEstimator::flowCorrect()
 	// flow measurement matrix and noise matrix
 	Matrix<float, n_y_flow, n_x> C;
 	C.setZero();
-	C(Y_flow_x, X_x) = 1;
-	C(Y_flow_y, X_y) = 1;
+	C(Y_flow_vx, X_vx) = 1;
+	C(Y_flow_vy, X_vy) = 1;
 
 	SquareMatrix<float, n_y_flow> R;
 	R.setZero();
 	float d = agl() * cosf(_sub_att.get().roll) * cosf(_sub_att.get().pitch);
-	float flow_xy_stddev = _flow_xy_stddev.get() + _flow_xy_d_stddev.get() * d ;
-	R(Y_flow_x, Y_flow_x) = flow_xy_stddev * flow_xy_stddev;
-	R(Y_flow_y, Y_flow_y) = R(Y_flow_x, Y_flow_x);
+	float flow_vxy_stddev = _flow_vxy_stddev.get() + _flow_vxy_d_stddev.get() * d ;
+	R(Y_flow_vx, Y_flow_vx) = flow_vxy_stddev * flow_vxy_stddev;
+	R(Y_flow_vy, Y_flow_vy) = R(Y_flow_vx, Y_flow_vx);
 
 	// residual
 	Vector<float, 2> r = y - C * _x;
