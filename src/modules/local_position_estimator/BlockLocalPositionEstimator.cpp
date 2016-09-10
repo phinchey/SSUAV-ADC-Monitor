@@ -147,8 +147,6 @@ BlockLocalPositionEstimator::BlockLocalPositionEstimator() :
 	_altOriginInitialized(false),
 	_baroAltOrigin(0),
 	_gpsAltOrigin(0),
-	_visionOrigin(),
-	_mocapOrigin(),
 
 	// flow integration
 	_flowX(0),

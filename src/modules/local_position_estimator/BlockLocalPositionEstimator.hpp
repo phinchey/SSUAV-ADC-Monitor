@@ -351,8 +351,6 @@ private:
 	bool _altOriginInitialized;
 	float _baroAltOrigin;
 	float _gpsAltOrigin;
-	Vector3f _visionOrigin;
-	Vector3f _mocapOrigin;
 
 	// flow integration
 	float _flowX;
