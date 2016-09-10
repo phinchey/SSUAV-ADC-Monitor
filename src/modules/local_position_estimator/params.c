@@ -225,7 +225,7 @@ PARAM_DEFINE_FLOAT(LPE_EPV_MAX, 5.0f);
  * @max 1
  * @decimal 3
  */
-PARAM_DEFINE_FLOAT(LPE_VIS_XY, 0.5f);
+PARAM_DEFINE_FLOAT(LPE_VIS_XY, 0.1f);
 
 /**
  * Vision z standard deviation.
