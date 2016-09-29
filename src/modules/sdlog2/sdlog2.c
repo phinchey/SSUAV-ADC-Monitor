@@ -1285,7 +1285,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 			struct log_LAND_s log_LAND;
 			struct log_RPL6_s log_RPL6;
 			struct log_LOAD_s log_LOAD;
-			struct log_AOAS_s log_AOAS;  // ADDED BY DEAFRO
+			struct log_BAT2_s log_BAT2;  // ADDED BY DEAFRO
 		} body;
 	} log_msg = {
 		LOG_PACKET_HEADER_INIT(0)
@@ -2281,12 +2281,12 @@ int sdlog2_thread_main(int argc, char *argv[])
 			LOGBUFFER_WRITE_AND_COUNT(ATT);
 		}
 
-                /* --- ANGLE-OF-ATTACK AND SIDESLIP --- */ // ADDED BY DEAFRO
+                /* --- SECOND BATTERY MONITOR --- */ // ADDED BY DEAFRO
                 if (copy_if_updated(ORB_ID(adc_report), &subs.adc_sub, &buf.adc)) {
-                	log_msg.msg_type = LOG_AOAS_MSG;
-                	log_msg.body.log_AOAS.channel_value_aoa = buf.adc.channel_value[6];
-                	log_msg.body.log_AOAS.channel_value_ss = buf.adc.channel_value[7];
-                	LOGBUFFER_WRITE_AND_COUNT(AOAS);
+                	log_msg.msg_type = LOG_BAT2_MSG;
+                	log_msg.body.log_BAT2.channel_value_v = buf.adc.channel_value[6];
+                	log_msg.body.log_BAT2.channel_value_a = buf.adc.channel_value[7];
+                	LOGBUFFER_WRITE_AND_COUNT(BAT2);
                 }
 		/* --- CAMERA TRIGGER --- */
 		if (copy_if_updated(ORB_ID(camera_trigger), &subs.cam_trig_sub, &buf.camera_trigger)) {

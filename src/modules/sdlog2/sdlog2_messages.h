@@ -647,11 +647,11 @@ struct log_PARM_s {
 	float value;
 };
 
-/* --- AOA,SS - ANGLE OF ATTACK AND SIDESLIP --- */ // ADDED BY DEAFRO
-#define LOG_AOAS_MSG 120
-struct log_AOAS_s {
-	float channel_value_aoa;     //# Angle-of-Attack voltage in volts.  Range 0-3.3 Volts
-	float channel_value_ss;      //# Sideslip voltage.  Range 0 - 3.3 Volts
+/* --- v,a - VOLTAGE AND AMPERAGE MEASURED BY SECOND BATTERY MONITOR --- */ // ADDED BY DEAFRO
+#define LOG_BAT2_MSG 120
+struct log_BAT2_s {
+	float channel_value_v;     //# battery voltage devide by 5.45.  Range 0-3.3 corresponds to 0-18 Volts
+	float channel_value_a;      //# battery current draw indicated by voltage.  Range 0 - 3.3 Volts
 };
 #pragma pack(pop)
 
@@ -726,7 +726,7 @@ static const struct log_format_s log_formats[] = {
 	LOG_FORMAT(TIME, "Q", "StartTime"),
 	LOG_FORMAT(VER, "NZ", "Arch,FwGit"),
 	LOG_FORMAT(PARM, "Nf", "Name,Value"),
-	LOG_FORMAT(AOAS, "ff", "AOA,SS") // ADDED BY DEAFRO
+	LOG_FORMAT(BAT2, "ff", "v,a") // ADDED BY DEAFRO
 };
 
 static const unsigned log_formats_num = sizeof(log_formats) / sizeof(log_formats[0]);
